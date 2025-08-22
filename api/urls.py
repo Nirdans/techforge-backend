@@ -18,6 +18,6 @@ router.register(r'membres-groupe', MembreGroupeViewSet)
 router.register(r'transactions', TransactionViewSet)
 
 urlpatterns = [
-    path('api/', api, name='api'),
+    path('test/', api, name='api'),
     path('', include(router.urls)),
 ]
