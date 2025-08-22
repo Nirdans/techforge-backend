@@ -5,10 +5,10 @@ from .models import User, GroupeFamilial, Categorie, MembreGroupe, Transaction
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('user_id', 'username', 'email', 'devise', 'solde', 'created_at')
-    list_filter = ('devise', 'created_at')
+    list_display = ('id', 'username', 'email', 'devise', 'solde', 'date_joined')
+    list_filter = ('devise', 'date_joined')
     search_fields = ('username', 'email')
-    readonly_fields = ('user_id', 'created_at', 'updated_at')
+    readonly_fields = ('id', 'date_joined', 'last_login')
 
 
 @admin.register(GroupeFamilial)
