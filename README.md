@@ -39,8 +39,6 @@ backend/
 │   │   └── transaction_serializer.py
 │   └── migrations/        # Migrations de base de données
 ├── core/                  # Configuration Django
-├── env/                   # Environnement virtuel Python
-└── db.sqlite3            # Base de données SQLite
 ```
 
 ## 🛠️ Technologies Utilisées
