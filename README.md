@@ -6,13 +6,14 @@ TechForge SGDP est une API REST moderne développée avec Django et Django REST 
 
 ### 🎯 Fonctionnalités Principales
 
-- **Gestion des utilisateurs** : Création, authentification et gestion des profils utilisateurs
+- **Gestion des utilisateurs** : Création, authentification et gestion des profils utilisateurs avec modèle d'utilisateur personnalisé
 - **Groupes familiaux** : Possibilité de créer et gérer des groupes pour les dépenses partagées
-- **Catégorisation** : Organisation des transactions par catégories personnalisables
-- **Suivi des transactions** : Enregistrement détaillé des revenus et dépenses
-- **Gestion des soldes** : Suivi automatique des soldes individuels et de groupe
-- **Justificatifs** : Upload et gestion des pièces justificatives
-- **API REST complète** : Interface API pour intégration avec des applications frontend
+- **Catégorisation** : Organisation des transactions par catégories personnalisables (revenus/dépenses)
+- **Suivi des transactions** : Enregistrement détaillé des revenus et dépenses avec justificatifs
+- **Gestion des soldes** : Suivi automatique des soldes individuels et de groupe avec devise personnalisable
+- **Justificatifs** : Upload et gestion des pièces justificatives pour les transactions
+- **API REST complète** : Interface API RESTful avec ViewSets pour intégration frontend
+- **Base de données flexible** : Support PostgreSQL et SQLite avec configuration par variables d'environnement
 
 ## 🏗️ Architecture du Projet
 
@@ -45,15 +46,19 @@ backend/
 
 - **Backend** : Django 5.2.5
 - **API** : Django REST Framework 3.16.1
-- **Base de données** : SQLite (par défaut, configurable)
+- **Base de données** : PostgreSQL (production) / SQLite (développement)
 - **Langage** : Python 3.12
-- **Architecture** : REST API
+- **Architecture** : REST API avec ViewSets
+- **Gestion des variables d'environnement** : python-decouple
+- **Parsing SQL** : sqlparse 0.5.3
+- **ASGI** : asgiref 3.9.1
 
 ## 📋 Prérequis
 
 - Python 3.10+
 - pip (gestionnaire de paquets Python)
 - Git (pour le clonage du repository)
+- PostgreSQL (optionnel, pour production)
 
 ## 🚀 Installation
 
@@ -80,29 +85,121 @@ env\Scripts\activate
 ### 3. Installer les dépendances
 
 ```bash
+# Installation à partir du fichier requirements.txt
+pip install -r requirements.txt
+
+# Ou installation manuelle des packages principaux
 pip install django==5.2.5
 pip install djangorestframework==3.16.1
+pip install python-decouple
+pip install psycopg2-binary
 pip install sqlparse==0.5.3
 ```
 
-### 4. Configuration de la base de données
+### 4. Configuration des variables d'environnement
+
+Créer un fichier `.env` à la racine du projet :
+
+```env
+# Configuration de sécurité
+SECRET_KEY=votre_cle_secrete_django
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1
+
+# Pour PostgreSQL (production)
+# DB_ENGINE=django.db.backends.postgresql
+# DB_NAME=nom_de_votre_base
+# DB_USER=utilisateur_postgres
+# DB_PASSWORD=mot_de_passe
+# DB_HOST=localhost
+# DB_PORT=5432
+```
+
+### 5. Configuration de la base de données
 
 ```bash
 # Appliquer les migrations
 python manage.py makemigrations
 python manage.py migrate
 
-# Créer un superutilisateur (optionnel)
+# Créer un superutilisateur (recommandé)
 python manage.py createsuperuser
 ```
 
-### 5. Lancer le serveur de développement
+### 6. Lancer le serveur de développement
 
 ```bash
 python manage.py runserver
 ```
 
 Le serveur sera accessible à l'adresse : `http://127.0.0.1:8000/`
+
+## 📡 Endpoints API
+
+### Base URL
+
+```
+http://127.0.0.1:8000/api/v1/
+```
+
+### Endpoints principaux
+
+| Endpoint              | Méthodes               | Description                   |
+| --------------------- | ---------------------- | ----------------------------- |
+| `/api/`               | GET                    | Endpoint de test API          |
+| `/users/`             | GET, POST, PUT, DELETE | Gestion des utilisateurs      |
+| `/groupes-familiaux/` | GET, POST, PUT, DELETE | Gestion des groupes familiaux |
+| `/categories/`        | GET, POST, PUT, DELETE | Gestion des catégories        |
+| `/membres-groupe/`    | GET, POST, PUT, DELETE | Gestion des membres de groupe |
+| `/transactions/`      | GET, POST, PUT, DELETE | Gestion des transactions      |
+
+### Exemples d'utilisation
+
+```bash
+# Tester l'API
+curl -X GET http://127.0.0.1:8000/api/
+
+# Lister tous les utilisateurs
+curl -X GET http://127.0.0.1:8000/api/v1/users/
+
+# Créer un utilisateur
+curl -X POST http://127.0.0.1:8000/api/v1/users/
+  -H "Content-Type: application/json"
+  -d '{
+    "username": "john_doe",
+    "email": "john@example.com",
+    "password": "motdepasse123",
+    "first_name": "John",
+    "last_name": "Doe",
+    "devise": "EUR",
+    "solde": 1000.00
+  }'
+
+# Créer une nouvelle transaction
+curl -X POST http://127.0.0.1:8000/api/v1/transactions/
+  -H "Content-Type: application/json"
+  -d '{
+    "montant": 100.50,
+    "date": "2025-08-22",
+    "description": "Courses alimentaires",
+    "type": "expense",
+    "categorie": 1,
+    "justificatif": null,
+    "user": 1,
+    "groupe_familial": null
+  }'
+
+# Créer une catégorie
+curl -X POST http://127.0.0.1:8000/api/v1/categories/
+  -H "Content-Type: application/json"
+  -d '{
+    "nom": "Alimentation",
+    "description": "Dépenses alimentaires",
+    "type": "expense"
+  }'
+```
+
+Le serveur sera accessible à l'adresse : `http://127.0.0.1:8000/api/v1`
 
 ## 📡 Endpoints API
 
@@ -121,47 +218,59 @@ Le serveur sera accessible à l'adresse : `http://127.0.0.1:8000/`
 
 ```bash
 # Lister tous les utilisateurs
-curl -X GET http://127.0.0.1:8000/users/
+curl -X GET http://127.0.0.1:8000/api/v1/users/
 
 # Créer une nouvelle transaction
-curl -X POST http://127.0.0.1:8000/transactions/ \
+curl -X POST http://127.0.0.1:8000/api/v1/transactions/ \
   -H "Content-Type: application/json" \
   -d '{
-    "montant": 50.00,
+    "montant": 100,
     "date": "2025-08-20",
     "description": "Courses alimentaires",
-    "type": "debit",
-    "categorie": 1,
-    "user": 1
+    "type": "expense", or "income"
+    "categorie": 1, (Loyer (expense))
+    "justificatif": null, type= file
+    "user": 1,
+    "groupe_familial": null
   }'
 ```
 
 ## 🗄️ Modèles de Données
 
-### User
+### User (Modèle d'utilisateur personnalisé)
 
-- Gestion des utilisateurs avec soldes individuels
-- Authentification et profils personnalisés
+- **Hérite de** : `AbstractUser` (Django)
+- **Champs supplémentaires** :
+  - `devise` : Devise préférée de l'utilisateur (CharField)
+  - `solde` : Solde personnel (DecimalField, max_digits=10, decimal_places=2)
+- **Fonctionnalités** : Authentification, profils personnalisés, gestion des soldes
 
 ### GroupeFamilial
 
-- Groupes pour dépenses partagées
-- Solde collectif du groupe
+- **Description** : Groupes pour dépenses partagées
+- **Fonctionnalités** : Solde collectif du groupe, gestion multi-utilisateurs
 
 ### Categorie
 
-- Catégorisation des transactions
-- Types : revenus ou dépenses
+- **Description** : Catégorisation des transactions
+- **Types supportés** : "income" (revenus) / "expense" (dépenses)
+- **Champs** : nom, description, type
 
 ### MembreGroupe
 
-- Association utilisateur-groupe
-- Rôles et soldes individuels dans le groupe
+- **Description** : Association utilisateur-groupe avec rôles
+- **Fonctionnalités** : Gestion des rôles et soldes individuels dans le groupe
 
 ### Transaction
 
-- Enregistrement des mouvements financiers
-- Support des justificatifs
+- **Description** : Enregistrement des mouvements financiers
+- **Champs principaux** :
+  - `montant` : Montant de la transaction
+  - `date` : Date de la transaction
+  - `description` : Description détaillée
+  - `type` : "income" ou "expense"
+  - `justificatif` : Fichier de justification (optionnel)
+  - Relations : `user`, `categorie`, `groupe_familial` (optionnel)
 
 ## 🧪 Tests
 
