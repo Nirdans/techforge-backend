@@ -1,15 +1,12 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 
-class User(models.Model):
-    user_id = models.AutoField(primary_key=True)
-    username = models.CharField(max_length=150, unique=True)
-    email = models.EmailField(unique=True)
-    password = models.CharField(max_length=128)
+class User(AbstractUser):
+    # Les champs username, email, password, date_joined, etc. sont déjà inclus dans AbstractUser
     devise = models.CharField(max_length=128)
     solde = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    # created_at et updated_at sont remplacés par date_joined et last_login dans AbstractUser
 
     def __str__(self):
         return self.username

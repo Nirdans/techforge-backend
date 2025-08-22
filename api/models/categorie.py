@@ -4,9 +4,15 @@ from .groupe_familial import GroupeFamilial
 
 
 class Categorie(models.Model):
+    # Choix pour le type de catégorie
+    TYPE_CHOICES = [
+        ('expense', 'Dépense'),
+        ('income', 'Revenu'),
+    ]
+    
     id = models.AutoField(primary_key=True)
     nom = models.CharField(max_length=255)
-    type = models.CharField(max_length=50)  # ex: 'revenus', 'depenses'
+    type = models.CharField(max_length=20, choices=TYPE_CHOICES, default='expense')
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     groupe_familial = models.ForeignKey(GroupeFamilial, on_delete=models.CASCADE, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

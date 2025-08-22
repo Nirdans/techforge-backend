@@ -5,11 +5,17 @@ from .categorie import Categorie
 
 
 class Transaction(models.Model):
+    # Choix pour le type de transaction
+    TYPE_CHOICES = [
+        ('expense', 'Dépense'),
+        ('income', 'Revenu'),
+    ]
+    
     id = models.AutoField(primary_key=True)
     montant = models.DecimalField(max_digits=10, decimal_places=2)
     date = models.DateField()
     description = models.TextField()
-    type = models.CharField(max_length=50)  # ex: 'credit', 'debit'
+    type = models.CharField(max_length=20, choices=TYPE_CHOICES, default='expense')
     categorie = models.ForeignKey(Categorie, on_delete=models.CASCADE)
     justificatif = models.FileField(upload_to='justificatifs/', null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
