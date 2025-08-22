@@ -46,7 +46,7 @@ backend/
 
 - **Backend** : Django 5.2.5
 - **API** : Django REST Framework 3.16.1
-- **Base de données** : PostgreSQL (production) / SQLite (développement)
+- **Base de données** : PostgreSQL
 - **Langage** : Python 3.12
 - **Architecture** : REST API avec ViewSets
 - **Gestion des variables d'environnement** : python-decouple
@@ -58,7 +58,7 @@ backend/
 - Python 3.10+
 - pip (gestionnaire de paquets Python)
 - Git (pour le clonage du repository)
-- PostgreSQL (optionnel, pour production)
+- PostgreSQL
 
 ## 🚀 Installation
 
@@ -106,13 +106,13 @@ SECRET_KEY=votre_cle_secrete_django
 DEBUG=True
 ALLOWED_HOSTS=localhost,127.0.0.1
 
-# Pour PostgreSQL (production)
-# DB_ENGINE=django.db.backends.postgresql
-# DB_NAME=nom_de_votre_base
-# DB_USER=utilisateur_postgres
-# DB_PASSWORD=mot_de_passe
-# DB_HOST=localhost
-# DB_PORT=5432
+Pour PostgreSQL
+DB_ENGINE=django.db.backends.postgresql
+DB_NAME=nom_de_votre_base
+DB_USER=utilisateur_postgres
+DB_PASSWORD=mot_de_passe
+DB_HOST=localhost
+DB_PORT=5432
 ```
 
 ### 5. Configuration de la base de données
@@ -157,7 +157,7 @@ http://127.0.0.1:8000/api/v1/
 
 ```bash
 # Tester l'API
-curl -X GET http://127.0.0.1:8000/api/
+curl -X GET http://127.0.0.1:8000/api/v1/test/
 
 # Lister tous les utilisateurs
 curl -X GET http://127.0.0.1:8000/api/v1/users/
@@ -207,7 +207,7 @@ Le serveur sera accessible à l'adresse : `http://127.0.0.1:8000/api/v1`
 
 | Endpoint              | Méthode                | Description                   |
 | --------------------- | ---------------------- | ----------------------------- |
-| `/api/`               | GET                    | Endpoint de test              |
+| `/test/`               | GET                    | Endpoint de test              |
 | `/users/`             | GET, POST, PUT, DELETE | Gestion des utilisateurs      |
 | `/groupes-familiaux/` | GET, POST, PUT, DELETE | Gestion des groupes familiaux |
 | `/categories/`        | GET, POST, PUT, DELETE | Gestion des catégories        |
