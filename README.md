@@ -106,7 +106,7 @@ SECRET_KEY=votre_cle_secrete_django
 DEBUG=True
 ALLOWED_HOSTS=localhost,127.0.0.1
 
-Pour PostgreSQL
+# Pour PostgreSQL
 DB_ENGINE=django.db.backends.postgresql
 DB_NAME=nom_de_votre_base
 DB_USER=utilisateur_postgres
