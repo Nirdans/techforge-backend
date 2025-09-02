@@ -86,6 +86,43 @@ DATABASES = {
     }
 }
 
+import logging
+from colorama import Fore, Style, init
+init(autoreset=True)
+
+class SQLFormatter(logging.Formatter):
+    def format(self, record):
+        msg = super().format(record)
+        if 'SELECT' in msg:
+            msg = Fore.GREEN + msg + Style.RESET_ALL
+        elif 'INSERT' in msg or 'UPDATE' in msg:
+            msg = Fore.YELLOW + msg + Style.RESET_ALL
+        elif 'DELETE' in msg:
+            msg = Fore.RED + msg + Style.RESET_ALL
+        return msg
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'sql_color',
+        },
+    },
+    'formatters': {
+        'sql_color': {
+            '()': SQLFormatter,
+            'format': '%(asctime)s %(levelname)s %(message)s',
+        },
+    },
+    'loggers': {
+        'django.db.backends': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+        },
+    },
+}
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
