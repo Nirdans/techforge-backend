@@ -1,0 +1,4 @@
+Facture de test
+Montant: 50.00 XOF
+Date: 2025-01-15
+Description: Achat de matériel de bureau
