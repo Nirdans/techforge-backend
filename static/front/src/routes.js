@@ -45,6 +45,7 @@ import Categories from "layouts/categories";
 import CategoryDetails from "layouts/categories/details";
 import Transactions from "layouts/transactions";
 import TransactionDetails from "layouts/transactions/details";
+import Groups from "layouts/groups";
 import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
 import ResetPassword from "layouts/authentication/reset-password/cover";
@@ -78,6 +79,14 @@ const routes = [
     icon: <Icon fontSize="small">receipt</Icon>,
     route: "/transactions",
     component: <Transactions />,
+  },
+  {
+    type: "collapse",
+    name: "Groups",
+    key: "groups",
+    icon: <Icon fontSize="small">groups</Icon>,
+    route: "/groups",
+    component: <Groups />,
   },
   // Routes cachées (non affichées dans le sidebar)
   {
